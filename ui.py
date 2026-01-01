@@ -87,10 +87,17 @@ def setup_agent():
     """
 
     # Setup llm model
+    # --- FIX: Get API Key securely from Streamlit Secrets ---
+    try:
+        api_key = st.secrets["GEMINI_API_KEY"]
+    except:
+        api_key = os.environ.get("GEMINI_API_KEY")
+
+    # Setup llm model
     llm = ChatGoogleGenerativeAI(
-        model="gemini-2.5-flash", # Corrected: Changed 2.5 to 1.5-flash (valid model)
-        api_key=os.environ.get("GEMINI_API_KEY"),
-        temperature=0 # Added: Set temp to 0 for consistent tool use
+        model="gemini-1.5-flash",
+        api_key=api_key,
+        temperature=0
     )
 
     # Initialize tools (Only if token exists, handled by sidebar check)
