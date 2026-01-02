@@ -67,6 +67,13 @@ Capabilities:
 1. GMAIL: Check unread emails, send replies, delete promotions.
 2. CALENDAR: Check schedule, book meetings, find free slots.
 3. SEARCH: Search real-time information using search tool.
+
+⚠️ CRITICAL RULES FOR TOOL USE:
+1. You MUST use valid JSON format for all tool arguments.
+2. You MUST use DOUBLE QUOTES for all JSON keys and values. 
+   - CORRECT: {{"calendar_id": "primary", "time": "10:00"}}
+   - WRONG: {{'calendar_id': 'primary', 'time': '10:00'}}
+3. If checking "today's events", calculate the date from Current Date: {current_date}.
 """
 print("PlanX system initializing...")
 
@@ -119,62 +126,64 @@ workflow.add_edge("tools", "agent")
 # Compile
 app = workflow.compile()
 
-print("\n" + "="*40)
-print("PlanX v1.0 is online")
-print("(Type 'exit' or 'quit' to stop)")
-print("="*40 + "\n")
-
-# # Start with a greeting
-# speak("PlanX is online. How can I help you?")
-
 # Initialize Chat Memory with System Prompt
 current_state = {
     "messages": [SystemMessage(content=system_prompt)]
 }
 
-while True:
-    try:
-        # 1. Get User Input
-        user_input = input("User: ")
-        
-        # 2. Check for Exit
-        if user_input.lower() in ["exit", "stop", "quit", "q"]:
-            print("PlanX: Shutting down. Goodbye!")
-            break
-        
-        # 3. Add User Message to State
-        current_state["messages"].append(HumanMessage(content=user_input))
+# # Start with a greeting
+# speak("PlanX is online. How can I help you?")
 
-        # 4. Run the Graph
-        final_state = app.invoke(current_state)
-
-        # 5. Extract Response (Handling both Strings and Lists)
-        ai_response = final_state["messages"][-1]
-        content = ai_response.content
-        
-        final_text = ""
-
-        # Case A: Simple String
-        if isinstance(content, str):
-            final_text = content
+# Only run loop if started directly
+if __name__ == "__main__":
+    print("Starting PlanX CLI Mode...")
+    print("\n" + "="*40)
+    print("PlanX v1.0 is online")
+    print("(Type 'exit' or 'quit' to stop)")
+    print("="*40 + "\n")
+    while True:
+        try:
+            # 1. Get User Input
+            user_input = input("User: ")
             
-        # Case B: Gemini List (Complex response)
-        elif isinstance(content, list):
-            for part in content:
-                if isinstance(part, dict) and "text" in part:
-                    final_text += part["text"]
-                elif isinstance(part, str):
-                    final_text += part
+            # 2. Check for Exit
+            if user_input.lower() in ["exit", "quit"]:
+                print("PlanX: Shutting down. Goodbye!")
+                break
+            
+            # 3. Add User Message to State
+            current_state["messages"].append(HumanMessage(content=user_input))
 
-        # Fallback if empty
-        if not final_text:
-            final_text = "Task completed."
+            # 4. Run the Graph
+            final_state = app.invoke(current_state)
 
-        # 6. Print the Response
-        print(f"\nPlanX: {final_text}\n")
+            # 5. Extract Response (Handling both Strings and Lists)
+            ai_response = final_state["messages"][-1]
+            content = ai_response.content
+            
+            final_text = ""
 
-        # 7. Update Memory
-        current_state = final_state
+            # Case A: Simple String
+            if isinstance(content, str):
+                final_text = content
+                
+            # Case B: Gemini List (Complex response)
+            elif isinstance(content, list):
+                for part in content:
+                    if isinstance(part, dict) and "text" in part:
+                        final_text += part["text"]
+                    elif isinstance(part, str):
+                        final_text += part
 
-    except Exception as e:
-        print(f"Error: {e}")
+            # Fallback if empty
+            if not final_text:
+                final_text = "Task completed."
+
+            # 6. Print the Response
+            print(f"\nPlanX: {final_text}\n")
+
+            # 7. Update Memory
+            current_state = final_state
+
+        except Exception as e:
+            print(f"Error: {e}")
