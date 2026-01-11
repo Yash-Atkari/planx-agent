@@ -1,5 +1,5 @@
 import os
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
@@ -11,7 +11,7 @@ from planX import get_agent_app
 # 1. Initialize API
 api = FastAPI(title="PlanX API")
 
-# 2. CORS (Frontend <-> Backend communication)
+# 2. CORS (Frontend & Backend communication)
 api.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -20,15 +20,14 @@ api.add_middleware(
     allow_headers=["*"],
 )
 
-# --- AUTHENTICATION CONFIG ---
+# Authentication config
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly', 
           'https://www.googleapis.com/auth/gmail.send',
           'https://www.googleapis.com/auth/calendar']
 CREDENTIALS_FILE = 'credentials.json'
 TOKEN_FILE = 'token.json'
 
-# --- NEW: WEB AUTH ENDPOINTS ---
-
+# Web auth endpoints
 @api.get("/login")
 async def login():
     """Generates the Google Auth URL and returns it to the frontend"""
@@ -63,8 +62,6 @@ async def auth_callback(code: str = None, error: str = None):
         token.write(flow.credentials.to_json())
         
     # Redirect the user back to your frontend (index.html)
-    # Note: Adjust the port 8000/5500 depending on how you open index.html. 
-    # If you just double-click index.html, we display a success message.
     return RedirectResponse("http://127.0.0.1:5500/index.html") # Use your frontend URL
 
 @api.get("/auth-check")
@@ -74,8 +71,7 @@ async def auth_check():
         return {"status": "connected"}
     return {"status": "disconnected"}
 
-# --- CHAT ENDPOINTS (Existing) ---
-
+# Chat endpoint
 class ChatRequest(BaseModel):
     message: str
 
@@ -85,9 +81,7 @@ async def chat_endpoint(request: ChatRequest):
         # 1. Unpack the tuple correctly
         agent_app, sys_prompt = get_agent_app() 
         
-        # 2. Prepare the messages. 
-        # To maintain 'memory' in this session, we usually send the 
-        # system prompt first, followed by the human message.
+        # 2. Prepare the messages.
         input_messages = [
             SystemMessage(content=sys_prompt),
             HumanMessage(content=request.message)

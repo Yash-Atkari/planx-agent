@@ -3,13 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PlanX AI Dashboard</title>
+    <title>PlanX</title>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
-        /* Base Setup */
         body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; display: flex; flex-direction: column; height: 100vh; }
         
-        /* 1. NAVBAR STYLES */
         nav {
             display: flex;
             justify-content: space-between;
@@ -143,17 +141,18 @@
     </div>
 
     <script>
-        // 1. SELECT ELEMENTS & GLOBAL STATE
+        // 1. Select elements
         const authBtn = document.getElementById('auth-btn');
         const authIcon = document.getElementById('auth-icon');
         const authText = document.getElementById('auth-text');
+
         const chatWindow = document.getElementById('chat-window');
         const inputField = document.getElementById('user-input');
         const sendBtn = document.getElementById('send-btn');
         
         let isUserConnected = false; // Track connection state globally
 
-        // 2. RUN ON PAGE LOAD
+        // 2. Run on page load
         window.addEventListener('DOMContentLoaded', checkConnection);
 
         async function checkConnection() {
@@ -191,7 +190,7 @@
             }
         }
 
-        // --- 3. UPDATED CHAT LOGIC WITH GUARDRAIL ---
+        // 3. Chat logic
         async function sendMessage(e) {
             e.preventDefault();
             const text = inputField.value.trim();
@@ -204,13 +203,13 @@
 
             const loaderId = showLoader();
 
-            // 🚀 THE GUARDRAIL: Check if connected before calling backend
+            // Check if connected before calling backend
             if (!isUserConnected) {
                 // Short delay to make it feel like "thinking"
                 setTimeout(() => {
                     removeLoader(loaderId);
                     addMessage(
-                        "🔒 **Authentication Required**: You first need to give access to your Google Account so I can process your request. \n\n Please click the **Connect Google** button at the top right to link your account and start chatting!", 
+                        "**Authentication Required**: You first need to give access to your Google Account so I can process your request. \n\n Please click the **Connect Google** button at the top right to link your account and start chatting!", 
                         'ai', 
                         true
                     );
@@ -235,7 +234,7 @@
 
             } catch (error) {
                 removeLoader(loaderId);
-                addMessage("❌ Error: Could not connect to PlanX backend.", 'ai');
+                addMessage("Error: Could not connect to PlanX backend.", 'ai');
             }
 
             inputField.disabled = false;
