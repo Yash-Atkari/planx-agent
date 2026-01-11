@@ -62,7 +62,7 @@ async def auth_callback(code: str = None, error: str = None):
         token.write(flow.credentials.to_json())
         
     # Redirect the user back to your frontend (index.html)
-    return RedirectResponse("http://127.0.0.1:5500/index.html") # Use your frontend URL
+    return RedirectResponse("https://planx-agent.netlify.app") # Use your frontend URL
 
 @api.get("/auth-check")
 async def auth_check():
