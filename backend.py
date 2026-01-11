@@ -34,7 +34,7 @@ async def login():
     # Create the flow using the credentials file
     flow = InstalledAppFlow.from_client_secrets_file(
         CREDENTIALS_FILE, SCOPES,
-        redirect_uri='https://planx-backend-yvin.onrender.com/auth-callback' # MUST MATCH EXACTLY
+        redirect_uri='https://planx-backend.onrender.com/auth-callback' # MUST MATCH EXACTLY
     )
     
     # Generate the authorization URL
@@ -51,7 +51,7 @@ async def auth_callback(code: str = None, error: str = None):
     # Recreate the flow to exchange the code for a token
     flow = InstalledAppFlow.from_client_secrets_file(
         CREDENTIALS_FILE, SCOPES,
-        redirect_uri='https://planx-backend-yvin.onrender.com/auth-callback'
+        redirect_uri='https://planx-backend.onrender.com/auth-callback'
     )
     
     # Fetch the token using the code Google sent us
