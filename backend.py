@@ -8,6 +8,10 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from langchain_core.messages import SystemMessage
 from planX import get_agent_app
 
+os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = '1'
+# Add this line to force HTTPS redirect detection on Render
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '0'
+
 # 1. Initialize API
 api = FastAPI(title="PlanX API")
 
