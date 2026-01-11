@@ -117,4 +117,10 @@ async def chat_endpoint(request: ChatRequest):
         print(f"Error: {e}")
         return {"response": f"I encountered an error: {str(e)}"}
 
+if __name__ == "__main__":
+    import uvicorn
+    # Render provides a PORT environment variable
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(api, host="0.0.0.0", port=port)
+    
 # Run with: uvicorn backend:api --reload
