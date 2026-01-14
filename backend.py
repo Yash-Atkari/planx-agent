@@ -38,8 +38,8 @@ async def login():
     # Create the flow using the credentials file
     flow = InstalledAppFlow.from_client_secrets_file(
         CREDENTIALS_FILE, SCOPES,
-        # redirect_uri='https://planx-backend-yvin.onrender.com/auth-callback' # MUST MATCH EXACTLY
-        redirect_uri='http://localhost:8000/auth-callback' # MUST MATCH EXACTLY
+        redirect_uri='https://planx-backend-yvin.onrender.com/auth-callback' # MUST MATCH EXACTLY
+        # redirect_uri='http://localhost:8000/auth-callback' # MUST MATCH EXACTLY
     )
     
     # Generate the authorization URL
@@ -56,8 +56,8 @@ async def auth_callback(code: str = None, error: str = None):
     # Recreate the flow to exchange the code for a token
     flow = InstalledAppFlow.from_client_secrets_file(
         CREDENTIALS_FILE, SCOPES,
-        # redirect_uri='https://planx-backend-yvin.onrender.com/auth-callback'
-        redirect_uri='http://localhost:8000/auth-callback'
+        redirect_uri='https://planx-backend-yvin.onrender.com/auth-callback'
+        # redirect_uri='http://localhost:8000/auth-callback'
     )
     
     # Fetch the token using the code Google sent us
@@ -68,8 +68,8 @@ async def auth_callback(code: str = None, error: str = None):
         token.write(flow.credentials.to_json())
         
     # Redirect the user back to your frontend (index.html)
-    # return RedirectResponse("https://planx-agent.netlify.app") # Use your frontend URL
-    return RedirectResponse("http://127.0.0.1:5500/index.html") # Use your frontend URL
+    return RedirectResponse("https://planx-agent.netlify.app") # Use your frontend URL
+    # return RedirectResponse("http://127.0.0.1:5500/index.html") # Use your frontend URL
 
 @api.get("/auth-check")
 async def auth_check():
