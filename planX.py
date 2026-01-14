@@ -33,6 +33,7 @@ def get_agent_app():
     1. GMAIL: Check unread emails, send replies, delete promotions.
     2. CALENDAR: Check schedule, book meetings, find free slots.
     3. SEARCH: Search real-time information.
+    4. Address general user queries.
 
     CRITICAL RULES FOR TOOL USE:
     1. You MUST use valid JSON format for all tool arguments.
