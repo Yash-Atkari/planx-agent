@@ -15,10 +15,13 @@ from langgraph.prebuilt import ToolNode, tools_condition
 # Search tool imports
 from langchain_community.tools.tavily_search import TavilySearchResults
 
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
+
 load_dotenv()
 
 # The wrapper function allows backend.py to import the agent logic safely
-def get_agent_app():
+def get_agent_app(user_google_token=None):
     print("Initializing PlanX Agent components...")
     
     # Get the real date dynamically
@@ -43,15 +46,24 @@ def get_agent_app():
     3. If checking "today's events", calculate the date from Current Date: {current_date}.
     """
 
-    # Load Tools Safely
+    # Convert the dictionary from Supabase into a Google Credentials object
+    creds = None
+    if user_google_token:
+        # This takes the JSON data and makes it "readable" by the Google Toolkits
+        creds = Credentials.from_authorized_user_info(user_google_token)
+
+    # Load Tools using the dynamic credentials
     try:
-        print("Loading Google Toolkits...")
-        gmail_tools = GmailToolkit().get_tools()
-        calendar_tools = CalendarToolkit().get_tools()
+        if creds:
+            print("Loading Tools with user-specific credentials...")
+            gmail_tools = GmailToolkit(api_resource=build('gmail', 'v1', credentials=creds)).get_tools()
+            calendar_tools = CalendarToolkit(api_resource=build('calendar', 'v3', credentials=creds)).get_tools()
+        else:
+            print("No token provided. Running without Google tools.")
+            gmail_tools, calendar_tools = [], []
     except Exception as e:
-        print(f"Warning: Google Tools failed to load (Auth needed): {e}")
-        gmail_tools = []
-        calendar_tools = []
+        print(f"Auth Error: {e}")
+        gmail_tools, calendar_tools = [], []
 
     search_tool = TavilySearchResults(max_results=3)
     master_tools = gmail_tools + calendar_tools + [search_tool]
