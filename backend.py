@@ -32,8 +32,8 @@ api.add_middleware(
 
 # $ Supabase Connection (Add these to Render Env Variables)
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
-SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+SUPABASE_SERVICE_ROLE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 
 # Check if the code is running on Render (Render sets the 'RENDER' environment variable to 'true')
 if os.environ.get('RENDER'):
