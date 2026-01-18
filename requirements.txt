@@ -6,7 +6,9 @@ langchain-community
 langchain-core
 langgraph
 google-auth-oauthlib
+google-auth-httplib2
 google-auth
 python-dotenv
 tavily-python
 supabase
+google-api-python-client
